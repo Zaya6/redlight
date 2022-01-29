@@ -1,0 +1,20 @@
+[
+ {
+  "directory": "D:\\redlight",
+  "arguments": [
+   "clang",
+   "-g",
+   "-DDebug=1",
+   "-Wall",
+   "-Iext/includes",
+   "-o",
+   "bin/redlight.exe",
+   "-fsanitize=address",
+   "-Lext/win64",
+   "-lSDL2",
+   "-LC:Program Files (x86)Windows Kits10Lib10.0.19041.0umx64",
+   "src/main.c"
+  ],
+  "file": "src/main.c"
+ }
+]
