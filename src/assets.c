@@ -4,6 +4,7 @@
 
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_surface.h"
+#include <stdlib.h>
 #include "macros.h"
 #include "types.h"
 
@@ -36,9 +37,9 @@ getEnvVariableP( const char *variable){
 	getenv_s(&rsize, data, rsize, variable);
 	return data;
 
-	#elif define(__linux__)
+	#elif defined(__linux__)
 
-	return secure_getenv(variable);
+	return getenv(variable);
 	
 	#else
 	

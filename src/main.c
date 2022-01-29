@@ -35,6 +35,9 @@ typedef struct gameState {
 } gameState;
 
 
+#undef max
+#undef min
+
 void
 addEntity(entity e, gameState *game) {
 	//
@@ -103,7 +106,7 @@ int main(int argc, char* argv[]) {
 		
 		//limit to frame rate of 60 fps
 		int32_t frameVariance = diffTicks-frameTime;
-		int32_t frameAdjust =  min(max(frameVariance, 0), frameTime);
+		int32_t frameAdjust =  SDL_min(SDL_max(frameVariance, 0), frameTime);
 		
 		SDL_Delay( frameTime - frameAdjust );
 		oldTicks = newTicks;

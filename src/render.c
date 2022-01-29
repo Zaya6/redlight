@@ -11,6 +11,7 @@
 #include "SDL2/SDL_timer.h"
 #include "SDL2/SDL_video.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include "macros.h"
 #include "types.h"
 #include "render.h"
