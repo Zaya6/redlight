@@ -14,7 +14,8 @@ typedef enum assetType{
 typedef enum errorType {
 	noError,
 	allocError,
-	indexError
+	indexError,
+	nullError
 } errorType;
 
 // TODO: find way to remove all sdl stuff
