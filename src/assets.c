@@ -4,26 +4,32 @@
 
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_surface.h"
+#include <bits/stdint-intn.h>
 #include <stdlib.h>
 #include "macros.h"
 #include "types.h"
+#include "memory.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x)
 #define STBI_MALLOC SDL_malloc
 #define STBI_REALLOC SDL_realloc
 #define STBI_FREE SDL_free
-#include <stb_image.h>
+#include "stb_image.h"
 
 //global stuff
-global char *assetDir = NULL;
-global SDL_Renderer *renderer;
+global char* assetDir = NULL;
+global SDL_Renderer* renderer;
 
-char *
+// TODO: have memManager point to current scene memManager
+//       so asset loading can be tied to scene and not global
+global hMemManager assetManager;
+
+char*
 getEnvVariableP( const char *variable){
 	#if defined (_WIN32)
 
-	char *data;
+	char* data;
 	size_t rsize = 0;
 	
 	getenv_s(&rsize, NULL, 0, variable);
@@ -51,9 +57,11 @@ getEnvVariableP( const char *variable){
 
 
 void
-assets_init(SDL_Renderer *nRenderer){
+assets_init(SDL_Renderer* nRenderer){
+	//assetManager = mem_createManager();
+	
 	renderer = nRenderer;
-	char *assetDirectory = NULL;
+	char* assetDirectory = NULL;
 
 	// try to get the default asset directory from environment
 	assetDirectory = getEnvVariableP("REDASSETDIR");
@@ -73,6 +81,9 @@ assets_init(SDL_Renderer *nRenderer){
 	SDL_Log("assetDir >> %s\n", assetDir);
 }
 
+void assets_cleanup(){
+	mem_destroyManager(assetManager);
+}
 
 
 const char *
@@ -92,10 +103,7 @@ getFilePathP(const char *filename){
 
 
 SDL_Surface *
-loadSurface(const char *filename){
-	// Read data
-	int32_t width, height, bytesPerPixel;
-	void* data = stbi_load(filename, &width, &height, &bytesPerPixel, 0);
+loadSurfaceFromStbi(void *rawImageData, int32_t width, int32_t height, int32_t bytesPerPixel){
 
 	// Calculate pitch
 	int pitch;
@@ -117,11 +125,12 @@ loadSurface(const char *filename){
     Amask = 0x000000FF >> s;
 #endif
 	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(
-									 data, width, height, bytesPerPixel*8,
+									 rawImageData, width, height, bytesPerPixel*8,
 									 pitch, Rmask, Gmask,  Bmask, Amask);
 	if (!surface){
 		//free the data if it fails
-		SDL_free(data);
+		SDL_free(rawImageData);
+		rawImageData = NULL;
 		return NULL;
 	}
 	// todo: check if need to free original data
@@ -131,15 +140,19 @@ loadSurface(const char *filename){
 
 //export
 hTexture
-assets_loadTexture(const char *filename){
+assets_loadTexture(const char* filename){
 	char *path = (char*)getFilePathP(filename);
+
+	int32_t width, height, bytesPerPixel;
+	void*	rawImageData = rawImageData = stbi_load(path, &width, &height, &bytesPerPixel, 0);
 	
-	SDL_Surface * surface = loadSurface(path);
+	SDL_Surface * surface = loadSurfaceFromStbi(rawImageData, width, height, bytesPerPixel);
 	SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, surface);
 	// TODO: store textures array for easy free later
 	
 	SDL_FreeSurface(surface);
 	free(path);
+	free(rawImageData);
 	return (hTexture) texture;
 }
 

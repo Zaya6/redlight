@@ -1,20 +1,28 @@
 [
  {
-  "directory": "D:\\redlight",
+  "directory": "/run/media/zaya/Projects/redlight",
   "arguments": [
    "clang",
    "-g",
    "-DDebug=1",
    "-Wall",
+   "-std=c99",
+   "-lm",
+   "-I/usr/include/SDL2",
+   "-D_REENTRANT",
    "-Iext/includes",
    "-o",
-   "bin/redlight.exe",
+   "build/linux/redlight",
    "-fsanitize=address",
-   "-Lext/win64",
+   "-L/usr/lib",
+   "-pthread",
    "-lSDL2",
-   "-LC:Program Files (x86)Windows Kits10Lib10.0.19041.0umx64",
-   "src/main.c"
+   "src/assets.c",
+   "src/main.c",
+   "src/map.c",
+   "src/memory.c",
+   "src/render.c"
   ],
-  "file": "src/main.c"
+  "file": "src/render.c"
  }
-]
+]

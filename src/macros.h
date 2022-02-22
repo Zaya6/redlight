@@ -6,5 +6,6 @@
 #define getcwd SDL_GetBasePath
 #define malloc SDL_malloc
 #define free SDL_free
+#define realloc SDL_realloc
 
 #define global static

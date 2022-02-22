@@ -10,3 +10,6 @@ assets_loadTexture(const char *filename);
 
 rect
 assets_getTextureRect(hTexture texture);
+
+void
+assets_freeTest();
