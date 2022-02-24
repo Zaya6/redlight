@@ -82,7 +82,7 @@ assets_init(SDL_Renderer* nRenderer){
 }
 
 void assets_cleanup(){
-	mem_destroyManager(assetManager);
+	//mem_destroyManager(assetManager);
 }
 
 
@@ -90,13 +90,14 @@ const char *
 getFilePathP(const char *filename){
 	size_t s = strlen(assetDir) + strlen(filename) + 1;//add place for null
 	char *dest = SDL_malloc(s * sizeof(uint8_t));
-	#if defined (_WIN64)
+	
+#if defined (_WIN64)
 	strcpy_s(dest, s, assetDir);
 	strcat_s(dest, s, filename);
-	#else
+#else
 	strcpy(dest, assetDir);
 	strcat(dest, filename);
-	#endif
+#endif
 	return dest;
 }
 

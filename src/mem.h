@@ -1,8 +1,5 @@
 #pragma once
 #include "types.h"
 
-typedef 
-
-typedef struct memWrap {
-
-} memWrap;
+void
+mem_test();

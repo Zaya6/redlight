@@ -19,14 +19,18 @@ typedef struct memManager {
 	size_t count;
 } memManager;
 
+// globals set to 0 
+global memManager masterManager;
 global memManager *currentManager;
 
 memManager
 mem_createManager() {
-    return (memManager) {
+	// TODO: convert function to malloc a memManager and return a handle
+	//       Then change all the other functions to work with handles
+   return (memManager) {
 		.stack = malloc(sizeof(uintptr_t) * MEM_PAGE_SIZE),	
 		.size = MEM_PAGE_SIZE
-		};	
+	};	
 }
 
 errorType
@@ -41,15 +45,42 @@ mem_destroyManager(memManager *mem){
 }
 
 handle
-mem_store(void * address, freeFunction destroy) {
-	if (!currentManager) return 0;
+mem_store(void* address, freeFunction destroy, memManager* manager) {
+	if (!manager)
+		// gaurd
+		if (!currentManager) return 0;
+		
+		manager = currentManager;
 	
-	if (currentManager->count+1) {
-		// increase stack size
+	if (manager->count+1) {
+		// TODO: increase stack size
 	} 
 
-	memWrap *newSpace = currentManager->stack[currentManager->count++];
-	newSpace->memory = address;
-	newSpace->destroy = destroy;
-	return (handle)newSpace->memory;
+	// get the tail location of the memManager stack
+	memWrap* newSpace = manager->stack[manager->count++];
+	SDL_Log("%p", newSpace->memory);
+	// *newSpace = (memWrap){
+	// 	.memory = address,
+	// 	.destroy = destroy
+	// };
+	// newSpace->memory = address;
+	// newSpace->destroy = destroy;
+	return (handle)address;//(handle)newSpace->memory;
+}
+
+void
+mem_test() {
+	// make a manager
+	memManager man = mem_createManager();
+	currentManager = &man;
+
+	// make something to store
+	long* thing = malloc(sizeof(long));
+	*thing = 999;
+
+	handle hThing = mem_store(thing, &free, NULL);
+
+
+	//long* thingBack = (long*)hThing;
+	SDL_Log("mem -> thing is [%p], hThing is [%p]", thing, (long*)hThing);
 }
