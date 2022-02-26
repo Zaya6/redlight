@@ -24,7 +24,7 @@ typedef enum errorType {
 typedef void (*freeFunction)(void *memory);
 
 typedef SDL_Rect rect;
-typedef uintptr_t handle;
+typedef void* handle;
 typedef handle hTexture;
 typedef handle hMap;
 typedef handle hMemManager;

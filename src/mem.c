@@ -4,11 +4,11 @@
 #include "mem.h"
 
 // TODO: maybe find platform independent way to get the system page size
-#define MEM_PAGE_SIZE 1024
+#define MEM_STACK_SIZE 1024
 
 
 typedef struct memWrap {
-	void *memory;
+	handle memory;
 	//size_t index;
 	freeFunction destroy;
 } memWrap;
@@ -23,15 +23,26 @@ typedef struct memManager {
 global memManager masterManager;
 global memManager *currentManager;
 
-memManager
+hMemManager
 mem_createManager() {
-	// TODO: convert function to malloc a memManager and return a handle
-	//       Then change all the other functions to work with handles
-   return (memManager) {
-		.stack = malloc(sizeof(uintptr_t) * MEM_PAGE_SIZE),	
-		.size = MEM_PAGE_SIZE
-	};	
+	memManager* man = malloc(sizeof(memManager));
+	man->stack = malloc(sizeof(memWrap*) * MEM_STACK_SIZE);
+	man->size = MEM_STACK_SIZE;
+	man->count = 0;
+
+   return (hMemManager)(void*)man;
 }
+
+
+// memManager
+// mem_createManager() {
+// 	// TODO: convert function to malloc a memManager and return a handle
+// 	//       Then change all the other functions to work with handles
+//    return (memManager) {
+// 		.stack = malloc(sizeof(uintptr_t) * MEM_STACK_SIZE),	
+// 		.size = MEM_STACK_SIZE
+// 	};	
+// }
 
 errorType
 mem_destroyManager(memManager *mem){
@@ -46,11 +57,11 @@ mem_destroyManager(memManager *mem){
 
 handle
 mem_store(void* address, freeFunction destroy, memManager* manager) {
-	if (!manager)
+	if (!manager){
 		// gaurd
 		if (!currentManager) return 0;
-		
 		manager = currentManager;
+	}
 	
 	if (manager->count+1) {
 		// TODO: increase stack size
@@ -71,8 +82,8 @@ mem_store(void* address, freeFunction destroy, memManager* manager) {
 void
 mem_test() {
 	// make a manager
-	memManager man = mem_createManager();
-	currentManager = &man;
+	hMemManager man = mem_createManager();
+	currentManager = (memManager*)man;
 
 	// make something to store
 	long* thing = malloc(sizeof(long));
