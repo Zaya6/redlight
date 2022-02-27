@@ -9,7 +9,6 @@
 
 typedef struct memWrap {
 	handle memory;
-	//size_t index;
 	freeFunction destroy;
 } memWrap;
 
@@ -23,6 +22,7 @@ typedef struct memManager {
 global memManager masterManager;
 global memManager *currentManager;
 
+
 hMemManager
 mem_createManager() {
 	memManager* man = malloc(sizeof(memManager));
@@ -34,16 +34,6 @@ mem_createManager() {
 }
 
 
-// memManager
-// mem_createManager() {
-// 	// TODO: convert function to malloc a memManager and return a handle
-// 	//       Then change all the other functions to work with handles
-//    return (memManager) {
-// 		.stack = malloc(sizeof(uintptr_t) * MEM_STACK_SIZE),	
-// 		.size = MEM_STACK_SIZE
-// 	};	
-// }
-
 errorType
 mem_destroyManager(memManager *mem){
 	forRange(mem->count) {
@@ -54,6 +44,7 @@ mem_destroyManager(memManager *mem){
 	free(mem);
 	return noError;
 }
+
 
 handle
 mem_store(void* address, freeFunction destroy, memManager* manager) {
@@ -69,14 +60,11 @@ mem_store(void* address, freeFunction destroy, memManager* manager) {
 
 	// get the tail location of the memManager stack
 	memWrap* newSpace = manager->stack[manager->count++];
-	SDL_Log("%p", newSpace->memory);
-	// *newSpace = (memWrap){
-	// 	.memory = address,
-	// 	.destroy = destroy
-	// };
-	// newSpace->memory = address;
-	// newSpace->destroy = destroy;
-	return (handle)address;//(handle)newSpace->memory;
+	// create new memwrap for 
+	newSpace = malloc(sizeof(memWrap));
+	newSpace->memory = address;
+	newSpace->destroy = destroy;
+	return (handle)newSpace;
 }
 
 void
@@ -94,4 +82,5 @@ mem_test() {
 
 	//long* thingBack = (long*)hThing;
 	SDL_Log("mem -> thing is [%p], hThing is [%p]", thing, (long*)hThing);
+	SDL_Log("mem -> it stores [%ld]", *((long*)hThing));
 }
