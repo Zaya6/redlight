@@ -46,13 +46,12 @@ mem_destroyManager(memManager *mem){
 
 handle
 mem_store(void* address, freeFunction destroy, memManager* manager) {
-	if (!manager)
-		// gaurd
-		if (!currentManager) return 0;
+	if (!manager){
+		if (!currentManager) return 0;// gaurd
 		
 		manager = currentManager;
 	
-	if (manager->count+1) {
+	} if (manager->count+1) {
 		// TODO: increase stack size
 	} 
 

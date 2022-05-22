@@ -37,15 +37,15 @@ void addEntity(entity e, gameState *game) {
 	//
 }
 
-void drawLoop(display *D, gameState *game, float delta) {
+void drawLoop(renderContext *RC, gameState *game, float delta) {
 	game->frame += delta * 12;
 	if (game->frame >= 8)
 		game->frame = 0;
 
 	render_sprite(
 		game->sprite, game->guide, 
-		(rect){100, 100, 128, 128},
-		(int)game->frame
+		(int)game->frame,
+		(rect){100, 100, 128, 128}
 		);
 }
 
@@ -53,10 +53,10 @@ void drawLoop(display *D, gameState *game, float delta) {
 int main(int argc, char* argv[]) {
 	mem_test();
 
-	display D = render_createDisplay();
+	renderContext RC = render_createDisplay();
 	
 	// get asset dir and check it
-	assets_init(D.screen);
+	assets_init(RC.screen);
 
 	gameState game = {.guide = {0, 1, 64, 64}};
 
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 		// clear screen
 		render_startDrawing();
 
-		drawLoop(&D, &game, delta);
+		drawLoop(&RC, &game, delta);
 
 		render_endDrawing();
 
@@ -101,8 +101,8 @@ int main(int argc, char* argv[]) {
 	// Cleanup what we're responcible for.
 	// let os handle rest
 
-	SDL_DestroyWindow(D.window);
-	SDL_DestroyRenderer(D.screen);
+	SDL_DestroyWindow(RC.window);
+	SDL_DestroyRenderer(RC.screen);
 	SDL_Quit();
 
 	printf("\n*success*\n");

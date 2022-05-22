@@ -5,9 +5,10 @@
 #include "types.h"
 #include "render.h"
 
-global display mainDisplay = {0};
+global renderContext mainDisplay = {0};
 
-display render_createDisplay(){
+renderContext 
+render_createDisplay(){
 	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL init fail!: %s\n", SDL_GetError() );
@@ -55,7 +56,7 @@ render_texture(hTexture texture, rect destination ){
 
 
 void
-render_sprite(hTexture texture, rect guide, rect dest, int frame){
+render_sprite(hTexture texture, rect guide, int frame, rect dest){
 	rect cutout = guide;
 	int width, height;
 	SDL_QueryTexture((SDL_Texture*)texture, NULL, NULL, &width, &height);

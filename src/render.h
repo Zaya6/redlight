@@ -3,21 +3,24 @@
 #include "macros.h"
 #include "types.h"
 
-typedef struct display_s {
+typedef struct renderContext {
 	SDL_Window *window;
 	SDL_Renderer *screen;
 	SDL_RendererInfo renderer;
 	SDL_Rect screenRect;
-} display;
+} renderContext;
 
-void render_startDrawing();
 
-void render_endDrawing();
+void 
+render_startDrawing();
+
+void 
+render_endDrawing();
 
 void
-render_sprite(hTexture texture, rect guide, rect dest, int frame);
+render_sprite(hTexture texture, rect guide, int frame, rect dest);
 
 void render_texture(hTexture texture, rect destination);
 
-display render_createDisplay();
+renderContext render_createDisplay();
 
